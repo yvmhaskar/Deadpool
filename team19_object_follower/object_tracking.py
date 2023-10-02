@@ -78,7 +78,7 @@ def main(args=None):
    x_axis_max = 638
    y_axis_max = 478
 
-   turn_dir = 0 # 1 is left, 2 is right
+   turn_dir = 0 # -1 is left, +1 is right
    parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
    parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
    args = parser.parse_args()
