@@ -6,18 +6,18 @@ from geometry_msgs.msg import Twist
 import numpy
 
 class RotateSubPub(Node):
-    def __init__(self):
-        super().__init__('rotate_sub_pub')
-        self.subscription = self.create_subscription(Int32, 'direction', self.listener_callback, 5)
-        self.subscription
-        self.cmd_vel = self.create_publisher(Twist,'cmd_vel',10)
+	def __init__(self):
+		super().__init__('rotate_sub_pub')
+		self.subscription = self.create_subscription(Int32, 'direction', self.listener_callback, 5)
+		self.subscription
+		self.cmd_vel = self.create_publisher(Twist,'cmd_vel',10)
 
-    def listener_callback(self, dir):
-        avg_speed = (numpy.pi)/4
-        twist = Twist()
-        dir2 = float(dir)
-        twist.angular.z = avg_speed*dir2
-        self.cmd_vel.publish(twist)
+	def listener_callback(self, dir):
+		avg_speed = (numpy.pi)/4
+		twist = Twist()
+		dir2 = float(dir)
+		twist.angular.z = avg_speed*dir2
+		self.cmd_vel.publish(twist)
 
 #class VelPublisher(Node):
 #   def __init__(self):
@@ -34,20 +34,20 @@ class RotateSubPub(Node):
 
 
 def main(args=None):
-    rclpy.init(args=args)
-    # Subscriber
-    rotate_sub_pub = RotateSubPub()
-    rclpy.spin(rotate_sub_pub)
-    
-    rotate_sub_pub.destroy_node()
+	rclpy.init(args=args)
+	# Subscriber
+	rotate_sub_pub = RotateSubPub()
+	rclpy.spin(rotate_sub_pub)
+
+	rotate_sub_pub.destroy_node()
 
 
-    # publisher
+	# publisher
 #    vel_publisher=VelPublisher()
 #    rclpy.spin(vel_publisher)
 #    vel_publisher.destroy_node()
 
-    rclpy.shutdown()
+	rclpy.shutdown()
 
 if __name__ == '__main__':
-    main()
+	main()
