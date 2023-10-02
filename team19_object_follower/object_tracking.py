@@ -71,7 +71,7 @@ class ObjectTrackingPubsub(Node):
       high_H = 146
       
       # The "CompressedImage" is transformed to a color image in BGR space and is store in "_imgBGR"
-	   frame = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
+      frame = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
       
       # image processing from lab 1
       blur = cv.GaussianBlur(frame, (15, 15), 0)
