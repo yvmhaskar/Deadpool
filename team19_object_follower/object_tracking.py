@@ -25,12 +25,12 @@ class CoordPublisher(Node):
 
       # image compression subscriber from Raw_image
       #Set up QoS Profiles for passing images over WiFi
-		image_qos_profile = QoSProfile(
-		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
-		    history=QoSHistoryPolicy.KEEP_LAST,
-		    durability=QoSDurabilityPolicy.VOLATILE,
-		    depth=1
-		)
+      image_qos_profile = QoSProfile(
+	reliability=QoSReliabilityPolicy.BEST_EFFORT,
+	history=QoSHistoryPolicy.KEEP_LAST,
+	durability=QoSDurabilityPolicy.VOLATILE,
+	depth=1
+      )
       
       #Declare that the minimal_video_subscriber node is subcribing to the /camera/image/compressed topic.
 		self._video_subscriber = self.create_subscription(
