@@ -7,49 +7,49 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
+from std_msgs.msg import Int32
+from sensor_msgs.msg import CompressedImage
+from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
+
+import sys
+
+import numpy as np
+from cv_bridge import CvBridge
+
 class CoordPublisher(Node):
    def __init__(self):
       super().__init__('coord_publisher')
-      self.publisher_ = self.create_publisher(int, 'direction', 5)
+      self.publisher_ = self.create_publisher(Int32, 'direction', 5)
+      self.control_input = 0  # Default direction
       #self.timer = self.create_timer(0.5, self.publish_command)
-      self.twist_msg = Twist()
 
-def on_low_H_thresh_trackbar(val):
- global low_H
- global high_H
- low_H = val
- low_H = min(high_H-1, low_H)
- cv.setTrackbarPos(low_H_name, window_detection_name, low_H)
-def on_high_H_thresh_trackbar(val):
- global low_H
- global high_H
- high_H = val
- high_H = max(high_H, low_H+1)
- cv.setTrackbarPos(high_H_name, window_detection_name, high_H)
-def on_low_S_thresh_trackbar(val):
- global low_S
- global high_S
- low_S = val
- low_S = min(high_S-1, low_S)
- cv.setTrackbarPos(low_S_name, window_detection_name, low_S)
-def on_high_S_thresh_trackbar(val):
- global low_S
- global high_S
- high_S = val
- high_S = max(high_S, low_S+1)
- cv.setTrackbarPos(high_S_name, window_detection_name, high_S)
-def on_low_V_thresh_trackbar(val):
- global low_V
- global high_V
- low_V = val
- low_V = min(high_V-1, low_V)
- cv.setTrackbarPos(low_V_name, window_detection_name, low_V)
-def on_high_V_thresh_trackbar(val):
- global low_V
- global high_V
- high_V = val
- high_V = max(high_V, low_V+1)
- cv.setTrackbarPos(high_V_name, window_detection_name, high_V)
+      # image compression subscriber from Raw_image
+      #Set up QoS Profiles for passing images over WiFi
+		image_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+		)
+      
+      #Declare that the minimal_video_subscriber node is subcribing to the /camera/image/compressed topic.
+		self._video_subscriber = self.create_subscription(
+				CompressedImage,
+				'/image_raw/compressed',
+				self._image_callback,
+				image_qos_profile)
+		self._video_subscriber # Prevents unused variable warning.
+
+   def update_direction(self, direction):
+        self.control_input = direction
+        msg = Int32()
+        msg.data = self.control_input
+        self.publisher_.publish(msg)
+
+    
+    def _image_callback(self, CompressedImage):	
+	    # The "CompressedImage" is transformed to a color image in BGR space and is store in "_imgBGR"
+	    self._imgBGR = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
 
 def main(args=None):
    # Setting up publisher values
@@ -90,18 +90,9 @@ def main(args=None):
    high_H = 146
    counter = 0
 
-   # Set adjustable trackbar for filtering
-   cv.namedWindow(window_capture_name)
-   cv.namedWindow(window_detection_name)
-   cv.createTrackbar(low_H_name, window_detection_name , low_H, max_value_H, on_low_H_thresh_trackbar)
-   cv.createTrackbar(high_H_name, window_detection_name , high_H, max_value_H, on_high_H_thresh_trackbar)
-   cv.createTrackbar(low_S_name, window_detection_name , low_S, max_value, on_low_S_thresh_trackbar)
-   cv.createTrackbar(high_S_name, window_detection_name , high_S, max_value, on_high_S_thresh_trackbar)
-   cv.createTrackbar(low_V_name, window_detection_name , low_V, max_value, on_low_V_thresh_trackbar)
-   cv.createTrackbar(high_V_name, window_detection_name , high_V, max_value, on_high_V_thresh_trackbar)
-
-   while True:
-      ret, frame = cap.read()
+   while rclpy.ok(): # True
+      #ret, frame = cap.read()
+      frame = 
       if frame is None:
          break
       blur = cv.GaussianBlur(frame, (15, 15), 0)
@@ -134,11 +125,11 @@ def main(args=None):
       if counter%5==0:
          #print("Direction: %2d" % (turn_dir))\
          self.publish_.publish(turn_dir)
-      cv.imshow(window_capture_name, frame)
-      cv.imshow(window_detection_name, frame_threshold)
-      key = cv.waitKey(30)
-      if key == ord('q') or key == 27:
-         break
+      #cv.imshow(window_capture_name, frame)
+      #cv.imshow(window_detection_name, frame_threshoframeld)
+      #key = cv.waitKey(30)
+      #if key == ord('q') or key == 27:
+      #   break
 
    coord_publisher.destroy_node()
    rclpy.shutdown()
