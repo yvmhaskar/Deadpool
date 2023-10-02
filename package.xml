@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>Follows the object the camera is trying to track</description>
   <maintainer email="ymhaskar@gatech.edu">burger</maintainer>
-  <license>TODO: Apache License 2.0</license>
+  <license>Apache License 2.0</license>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
