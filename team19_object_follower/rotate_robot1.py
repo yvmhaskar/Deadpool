@@ -13,7 +13,7 @@ class CoordSubscriber(Node):
 class VelPublisher(Node):
    def __init__(self):
       super().__init__('vel_publisher')
-      self.publisher_ = self.create_publisher(Twist, ’/cmd_vel’, 5)
+      self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 5)
       #self.timer = self.create_timer(0.5, self.publish_command)
       self.twist_msg = Twist()
 
