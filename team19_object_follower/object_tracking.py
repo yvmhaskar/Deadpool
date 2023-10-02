@@ -14,24 +14,23 @@ from cv_bridge import CvBridge
 
 class ObjectTrackingPubsub(Node):
   def __init__(self):
-	   super().__init__('object_tracking_pub_sub')
+	  super().__init__('object_tracking_pub_sub')
 	   #Declare that the minimal_video_subscriber node is subcribing to the /camera/image/compressed topic.
-	   self._get_image = self.create_subscription(
-		   CompressedImage,'/image_raw/compressed',self._image_callback,image_qos_profile)
-	   self._get_image # Prevents unused variable warning.
-	   
-	   self.dir_publisher_ = self.create_publisher(Int32, 'direction', 5)
-	   self.control_input = 0  # Default direction
-      #self.timer = self.create_timer(0.5, self.publish_command)
-
-      # image compression subscriber from Raw_image
+	         # image compression subscriber from Raw_image
       #Set up QoS Profiles for passing images over WiFi
-		#image_qos_profile = QoSProfile(
-		#    reliability=QoSReliabilityPolicy.BEST_EFFORT,
-		#    history=QoSHistoryPolicy.KEEP_LAST,
-		#    durability=QoSDurabilityPolicy.VOLATILE,
-		#    depth=1
-		#)
+	  image_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+	  ) 
+	  self._get_image = self.create_subscription(
+		   CompressedImage,'/image_raw/compressed',self._image_callback,image_qos_profile)
+	  self._get_image # Prevents unused variable warning.
+	   
+	  self.dir_publisher_ = self.create_publisher(Int32, 'direction', 5)
+	  self.control_input = 0  # Default direction
+      #self.timer = self.create_timer(0.5, self.publish_command)
 
    #def update_direction(self, direction):
    #     self.control_input = direction
