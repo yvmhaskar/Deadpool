@@ -106,7 +106,7 @@ class ObjectTrackingPubsub(Node):
       msg = Int32()
       msg.data=turn_dir
       self.dir_publisher_.publish(msg)
-      wait(100)
+      #wait(100)
 
 
 def main(args=None):
