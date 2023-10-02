@@ -103,7 +103,9 @@ class ObjectTrackingPubsub(Node):
       #self.publish_.publish(turn_dir)
 	   #coord_publisher.update_direction(turn_dir)
       # publish direction
-      self.dir_publisher_.publish(turn_dir)
+      msg = Int32()
+      msg.data=turn_dir
+      self.dir_publisher_.publish(msg)
       wait(100)
 
 
