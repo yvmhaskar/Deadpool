@@ -10,7 +10,7 @@ class RotateSubPub(Node):
         super().__init__('rotate_sub_pub')
         self.subscription = self.create_subscription(Int32, 'direction', self.listener_callback, 5)
         self.subscription
-        self.cmd_vel = self.create_publisher(Twist,'cmd_vel',queue_size=10)
+        self.cmd_vel = self.create_publisher(Twist,'cmd_vel',10)
 
     def listener_callback(self, dir):
         avg_speed = (numpy.pi)/4
