@@ -20,8 +20,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'object_follower=team19_object_follower.object_follower:main'
-	    'find_object=camera_viewer.view_image_raw.main'
+            'object_tracking=team19_object_follower.object_tracking:main',
+            'rotate_robot2=team19_object_follower.rotate_robot2:main',
+            'rotate_robot1=team19_object_follower.rotate_robot1:main',
+            'view_image_raw=team19_object_follower.view_image_raw:main',
+            'view_image_raw2=team19_object_follower.view_image_raw2:main',
         ],
     },
 )
