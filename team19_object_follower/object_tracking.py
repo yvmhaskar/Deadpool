@@ -92,7 +92,7 @@ def main(args=None):
 
    while rclpy.ok(): # True
       #ret, frame = cap.read()
-      frame = 
+      frame = coord_publisher._imageBGR
       if frame is None:
          break
       blur = cv.GaussianBlur(frame, (15, 15), 0)
@@ -124,7 +124,9 @@ def main(args=None):
       counter = counter +1
       if counter%5==0:
          #print("Direction: %2d" % (turn_dir))\
-         self.publish_.publish(turn_dir)
+         #self.publish_.publish(turn_dir)
+	coord_publisher.update_direction(turn_dir)
+
       #cv.imshow(window_capture_name, frame)
       #cv.imshow(window_detection_name, frame_threshoframeld)
       #key = cv.waitKey(30)
