@@ -6,7 +6,7 @@ from geometry_msgs.msg import Twist
 class CoordSubVelPub(Node):
     def __init__(self):
         super().__init__('coord_sub_vel_pub')
-        self.publisher_ = self.create_publisher(Twist, ’cmd_vel’, 5)
+        self.publisher_ = self.create_publisher(Twist,'cmd_vel', 5)
         self.control_subscriber_ = self.create_subscription(Int32, 'control_input', self.control_callback, 5)
         self.twist_msg = Twist()
         self.control_input = 0 # just initial value
