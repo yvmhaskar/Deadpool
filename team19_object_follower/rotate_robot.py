@@ -12,11 +12,11 @@ class RotateSubPub(Node):
 		self.subscription
 		self.cmd_vel = self.create_publisher(Twist,'cmd_vel',10)
 
-	def listener_callback(self, dir):
+	def listener_callback(self, msg):
 		avg_speed = (numpy.pi)/4
+		turn_dir = float(msg.data)
 		twist = Twist()
-		dir2 = float(dir)
-		twist.angular.z = avg_speed*dir2
+		twist.angular.z = avg_speed*turn_dir
 		self.cmd_vel.publish(twist)
 
 #class VelPublisher(Node):

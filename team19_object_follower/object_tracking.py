@@ -23,7 +23,8 @@ class ObjectTrackingPubsub(Node):
 			reliability=QoSReliabilityPolicy.BEST_EFFORT,
 			history=QoSHistoryPolicy.KEEP_LAST,
 			durability=QoSDurabilityPolicy.VOLATILE,
-			depth=1)
+			depth=1
+		)
 
 		#Declare _get_image node is subcribing to the /camera/image/compressed topic.
 		self._get_image = self.create_subscription(
@@ -59,8 +60,9 @@ class ObjectTrackingPubsub(Node):
 		radius = 0
 		x_axis = 0
 		y_axis = 0
-		x_axis_max = 638
-		y_axis_max = 478
+		x_axis_max = 328
+		y_axis_max = 246
+		DZ = 30
 
 		turn_dir = 0 # -1 is left, +1 is right
 		#cap = cv.VideoCapture(args.camera)
@@ -71,10 +73,10 @@ class ObjectTrackingPubsub(Node):
 		high_H = 146
 
 		# The "CompressedImage" is transformed to a color image in BGR space and is store in "_imgBGR"
-		frame = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
+		self._imgBGR = CvBridge().compressed_imgmsg_to_cv2(CompressedImage, "bgr8")
 
 		# image processing from lab 1
-		blur = cv.GaussianBlur(frame, (15, 15), 0)
+		blur = cv.GaussianBlur(self._imgBGR, (15, 15), 0)
 		frame_HSV = cv.cvtColor(blur, cv.COLOR_BGR2HSV)
 		frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
 		# finding the contours
@@ -89,23 +91,25 @@ class ObjectTrackingPubsub(Node):
 			radius = int(radius)
 		# reduces likelihood of showing contour on wrong object
 		if radius>40:
-			cv.circle(frame,center,radius,(0,255,0),2)
+			cv.circle(self._imgBGR,center,radius,(0,255,0),2)
 			cv.circle(frame_threshold,center,radius,(0,255,0),2)
 
 		#print center point of object
 		#print("Center: %2d, %2d" % (x_axis, y_axis))
-		if x_axis>(x_axis_max/2 -50) and x_axis<(x_axis_max/2 +50):
+		if (x_axis>(x_axis_max/2 -DZ) and x_axis<(x_axis_max/2 +DZ)) or (x_axis==0):
 			turn_dir = 0
 		elif x_axis<(x_axis_max/2):
-			turn_dir = -1
-		elif x_axis>(x_axis_max/2):
 			turn_dir = 1
+		elif x_axis>(x_axis_max/2):
+			turn_dir = -1
 		#print("Direction: %2d" % (turn_dir))\
 		#self.publish_.publish(turn_dir)
 		#coord_publisher.update_direction(turn_dir)
 		# publish direction
-		self.dir_publisher_.publish(turn_dir)
-		wait(100)
+		msg = Int32()
+		msg.data = turn_dir
+		self.dir_publisher_.publish(msg)
+		#wait(100)
 
 
 def main(args=None):
